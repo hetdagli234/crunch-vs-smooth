@@ -40,6 +40,7 @@ pub fn vote_smooth_handler(mut ctx: Context<VoteSmooth>) -> Result<()> {
     Ok(())
 }
 
+#[derive(Debug)]
 #[account]
 pub struct VoteAccount {
     owner: Pubkey,

@@ -45,6 +45,7 @@ describe("crunchy_vs_smooth", () => {
     );
 
     assert.equal(1, currentVoteAccountState.smooth.toNumber());
+    assert.equal(0, currentVoteAccountState.crunchy.toNumber());
   });
 
   it("Vote Crunchy", async () => {
@@ -58,5 +59,6 @@ describe("crunchy_vs_smooth", () => {
     );
 
     assert.equal(1, currentVoteAccountState.crunchy.toNumber());
+    assert.equal(1, currentVoteAccountState.smooth.toNumber());
   });
 });
