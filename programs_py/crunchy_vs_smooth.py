@@ -13,18 +13,21 @@ declare_id("Fo9d34XdUczXdNt9jkqrQseyUQys9bmTDC31utY3zt5x")
 def init(owner: Signer, voter: Empty[VoteAccount], vote_account_bump: u8):
     # As a new user connects, we create a new voter PDA account for him and intialize the account.
     init_voter = voter.init(payer=owner, seeds=["Voter"])
+    init_voter.owner = owner.key()
     init_voter.bump = vote_account_bump
 
 
 # To vote crunchy
 @instruction
-def vote_crunchy(vote: VoteAccount):
+def vote_crunchy(owner: Signer, vote: VoteAccount):
+    assert owner.key() == vote.owner, "This is not your Vote account!"
     vote.crunchy += 1
 
 
 # To vote smooth
 @instruction
-def vote_smooth(vote: VoteAccount):
+def vote_smooth(owner: Signer, vote: VoteAccount):
+    assert owner.key() == vote.owner, "This is not your Vote account!"
     vote.smooth += 1
 
 

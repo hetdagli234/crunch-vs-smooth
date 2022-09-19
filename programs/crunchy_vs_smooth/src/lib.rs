@@ -6,18 +6,12 @@ use std::convert::TryFrom;
 
 declare_id!("Fo9d34XdUczXdNt9jkqrQseyUQys9bmTDC31utY3zt5x");
 
-#[account]
-pub struct VoteAccount {
-    owner: Pubkey,
-    crunchy: u64,
-    smooth: u64,
-    bump: u8,
-}
-
 pub fn init_handler(mut ctx: Context<Init>, mut vote_account_bump: u8) -> Result<()> {
     let mut owner = &mut ctx.accounts.owner;
     let mut voter = &mut ctx.accounts.voter;
     let mut init_voter = voter;
+
+    init_voter.owner = owner.key();
 
     init_voter.bump = vote_account_bump;
 
@@ -25,7 +19,10 @@ pub fn init_handler(mut ctx: Context<Init>, mut vote_account_bump: u8) -> Result
 }
 
 pub fn vote_crunchy_handler(mut ctx: Context<VoteCrunchy>) -> Result<()> {
+    let mut owner = &mut ctx.accounts.owner;
     let mut vote = &mut ctx.accounts.vote;
+
+    require!(owner.key() == vote.owner, ProgramError::E000);
 
     vote.crunchy += 1;
 
@@ -33,11 +30,22 @@ pub fn vote_crunchy_handler(mut ctx: Context<VoteCrunchy>) -> Result<()> {
 }
 
 pub fn vote_smooth_handler(mut ctx: Context<VoteSmooth>) -> Result<()> {
+    let mut owner = &mut ctx.accounts.owner;
     let mut vote = &mut ctx.accounts.vote;
+
+    require!(owner.key() == vote.owner, ProgramError::E000);
 
     vote.smooth += 1;
 
     Ok(())
+}
+
+#[account]
+pub struct VoteAccount {
+    owner: Pubkey,
+    crunchy: u64,
+    smooth: u64,
+    bump: u8,
 }
 
 #[derive(Accounts)]
@@ -59,11 +67,15 @@ pub struct Init<'info> {
 #[derive(Accounts)]
 pub struct VoteCrunchy<'info> {
     #[account(mut)]
+    pub owner: Signer<'info>,
+    #[account(mut)]
     pub vote: Box<Account<'info, VoteAccount>>,
 }
 
 #[derive(Accounts)]
 pub struct VoteSmooth<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
     #[account(mut)]
     pub vote: Box<Account<'info, VoteAccount>>,
 }
@@ -83,4 +95,10 @@ pub mod crunchy_vs_smooth {
     pub fn vote_smooth(ctx: Context<VoteSmooth>) -> Result<()> {
         vote_smooth_handler(ctx)
     }
+}
+
+#[error_code]
+pub enum ProgramError {
+    #[msg("This is not your Vote account!")]
+    E000,
 }

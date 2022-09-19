@@ -37,7 +37,7 @@ describe("crunchy_vs_smooth", () => {
   it("Vote Smooth", async () => {
     const voteSmooth = await program.methods
       .voteSmooth()
-      .accounts({ vote: voter })
+      .accounts({ owner: provider.wallet.publicKey, vote: voter })
       .rpc();
 
     let currentVoteAccountState = await program.account.voteAccount.fetch(
@@ -50,7 +50,7 @@ describe("crunchy_vs_smooth", () => {
   it("Vote Crunchy", async () => {
     const voteCrunchy = await program.methods
       .voteCrunchy()
-      .accounts({ vote: voter })
+      .accounts({ owner: provider.wallet.publicKey, vote: voter })
       .rpc();
 
     let currentVoteAccountState = await program.account.voteAccount.fetch(
