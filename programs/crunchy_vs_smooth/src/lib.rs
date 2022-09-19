@@ -56,7 +56,7 @@ pub struct Init<'info> {
     #[account(
         init,
         payer = owner,
-        seeds = ["Voter".as_bytes().as_ref()],
+        seeds = ["Voter".as_bytes().as_ref(), owner.key().as_ref()],
         bump,
         space = 8 + std::mem::size_of::<VoteAccount>()
     )]

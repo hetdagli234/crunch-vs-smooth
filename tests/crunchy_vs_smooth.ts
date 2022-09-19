@@ -11,7 +11,7 @@ describe("crunchy_vs_smooth", () => {
   const program = anchor.workspace.CrunchyVsSmooth as Program<CrunchyVsSmooth>;
 
   const [voter, bump] = web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("Voter")],
+    [Buffer.from("Voter"), provider.wallet.publicKey.toBuffer()],
     program.programId
   );
 

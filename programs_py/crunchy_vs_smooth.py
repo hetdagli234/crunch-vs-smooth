@@ -12,7 +12,7 @@ declare_id("Fo9d34XdUczXdNt9jkqrQseyUQys9bmTDC31utY3zt5x")
 @instruction
 def init(owner: Signer, voter: Empty[VoteAccount], vote_account_bump: u8):
     # As a new user connects, we create a new voter PDA account for him and intialize the account.
-    init_voter = voter.init(payer=owner, seeds=["Voter"])
+    init_voter = voter.init(payer=owner, seeds=["Voter", owner])
     # Assign the owner or the Signer of the one initialize the accouunt to the user's newly created VoteAccount owner.
     init_voter.owner = owner.key()
     # Assign the bump to the one initializing the accouunt to the user's newly created VoteAccount bump.
